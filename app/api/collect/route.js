@@ -36,6 +36,7 @@ async function ensureSchema() {
   await db`
     CREATE TABLE IF NOT EXISTS study_submissions (
       id TEXT PRIMARY KEY,
+      participant_id TEXT,
       received_at TIMESTAMPTZ NOT NULL,
       exported_at TIMESTAMPTZ NOT NULL,
       session_count INTEGER NOT NULL DEFAULT 0,
@@ -45,6 +46,10 @@ async function ensureSchema() {
       visit_count INTEGER NOT NULL DEFAULT 0,
       payload JSONB NOT NULL
     )
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS participant_id TEXT
   `
 }
 
@@ -57,6 +62,7 @@ function buildSubmission(body) {
 
   return {
     id: `submission_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    participantId: body.participantId || null,
     receivedAt: new Date().toISOString(),
     exportedAt: body.exportedAt,
     sessionCount: Array.isArray(body.sessionLog) ? body.sessionLog.length : 0,
@@ -90,6 +96,7 @@ export async function POST(request) {
     await db`
       INSERT INTO study_submissions (
         id,
+        participant_id,
         received_at,
         exported_at,
         session_count,
@@ -100,6 +107,7 @@ export async function POST(request) {
         payload
       ) VALUES (
         ${submission.id},
+        ${submission.participantId},
         ${submission.receivedAt},
         ${submission.exportedAt},
         ${submission.sessionCount},
@@ -132,6 +140,7 @@ export async function GET() {
     const rows = await db`
       SELECT
         id,
+        participant_id AS "participantId",
         received_at AS "receivedAt",
         exported_at AS "exportedAt",
         session_count AS "sessionCount",
