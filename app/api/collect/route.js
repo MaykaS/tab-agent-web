@@ -6,6 +6,11 @@ import path from 'path'
 // Store submissions in /tmp (Vercel serverless writable directory)
 const DATA_DIR = '/tmp/tabagent-study'
 const INDEX_FILE = path.join(DATA_DIR, 'index.json')
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
 
 async function ensureDir() {
   if (!existsSync(DATA_DIR)) {
@@ -22,6 +27,10 @@ async function getIndex() {
   }
 }
 
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
+}
+
 export async function POST(request) {
   try {
     await ensureDir()
@@ -30,7 +39,10 @@ export async function POST(request) {
 
     // Validate basic structure
     if (!body.exportedAt || !body.sessionLog) {
-      return NextResponse.json({ error: 'Invalid data structure' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Invalid data structure' },
+        { status: 400, headers: CORS_HEADERS }
+      )
     }
 
     // Generate submission ID
@@ -57,16 +69,22 @@ export async function POST(request) {
     })
     await writeFile(INDEX_FILE, JSON.stringify(index, null, 2))
 
-    return NextResponse.json({ success: true, id })
+    return NextResponse.json({ success: true, id }, { headers: CORS_HEADERS })
 
   } catch (err) {
     console.error('Collect error:', err)
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Server error' },
+      { status: 500, headers: CORS_HEADERS }
+    )
   }
 }
 
 // Allow GET for admin to check submission count
 export async function GET() {
   const index = await getIndex()
-  return NextResponse.json({ count: index.length, submissions: index })
+  return NextResponse.json(
+    { count: index.length, submissions: index },
+    { headers: CORS_HEADERS }
+  )
 }
