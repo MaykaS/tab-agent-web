@@ -1,20 +1,22 @@
 # tab-agent-web
 
-Landing page for [Tab Agent](https://github.com/MaykaS/tab_agent) — deployed on Vercel.
+Website and study backend for [Tab Agent](https://github.com/MaykaS/tab_agent).
 
 ## Pages
 
 | Page | Status | Description |
 |------|--------|-------------|
-| `/` | Live | Landing page — what it does, install instructions, GitHub link |
-| `/demo` | Coming soon | Interactive demo with mock data — no extension needed |
-| `/evals` | In progress | User study and AI backend comparison results |
+| `/` | Live | Landing page |
+| `/demo` | Live/placeholder | Demo page |
+| `/evals` | In progress | Evaluation page |
+| `/admin` | Live | Review submitted study data |
+| `/api/collect` | Live | Receive and return anonymized study submissions |
 
 ## Stack
 
 - Next.js 14 (App Router)
-- Plain CSS modules — no Tailwind, no UI library
-- Deployed on Vercel
+- Vercel deployment
+- Neon Postgres for study storage
 
 ## Run locally
 
@@ -27,4 +29,20 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Deploy
 
-Connected to Vercel via GitHub. Push to `main` → auto-deploys.
+Connected to Vercel via GitHub. Push to `main` to deploy.
+
+## Study data
+
+The extension submits anonymized study snapshots to `/api/collect`.
+
+Stored data can include:
+- participant ID
+- tab/group/asleep counts
+- estimated memory summary
+- grouping rating summary
+- per-group snapshots
+- self-report survey responses
+
+Data is stored in Neon Postgres and surfaced through:
+- `/api/collect`
+- `/admin`
