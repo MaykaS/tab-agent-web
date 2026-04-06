@@ -39,10 +39,20 @@ async function ensureSchema() {
       participant_id TEXT,
       received_at TIMESTAMPTZ NOT NULL,
       exported_at TIMESTAMPTZ NOT NULL,
+      tab_count INTEGER,
+      open_tab_count INTEGER,
+      group_count INTEGER,
+      asleep_group_count INTEGER,
+      asleep_tab_count INTEGER,
+      grouping_useful INTEGER,
+      trust_sleep_close INTEGER,
+      would_use_in_real_browsing INTEGER,
       session_count INTEGER NOT NULL DEFAULT 0,
       rating_count INTEGER NOT NULL DEFAULT 0,
       avg_rating DOUBLE PRECISION NOT NULL DEFAULT 0,
       memory_saved DOUBLE PRECISION NOT NULL DEFAULT 0,
+      total_tab_memory_estimate_mb DOUBLE PRECISION,
+      memory_metrics_are_estimated BOOLEAN NOT NULL DEFAULT TRUE,
       visit_count INTEGER NOT NULL DEFAULT 0,
       payload JSONB NOT NULL
     )
@@ -50,6 +60,46 @@ async function ensureSchema() {
   await db`
     ALTER TABLE study_submissions
     ADD COLUMN IF NOT EXISTS participant_id TEXT
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS tab_count INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS open_tab_count INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS group_count INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS asleep_group_count INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS asleep_tab_count INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS grouping_useful INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS trust_sleep_close INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS would_use_in_real_browsing INTEGER
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS total_tab_memory_estimate_mb DOUBLE PRECISION
+  `
+  await db`
+    ALTER TABLE study_submissions
+    ADD COLUMN IF NOT EXISTS memory_metrics_are_estimated BOOLEAN NOT NULL DEFAULT TRUE
   `
 }
 
@@ -66,9 +116,19 @@ function buildSubmission(body) {
     receivedAt: new Date().toISOString(),
     exportedAt: body.exportedAt,
     sessionCount: Array.isArray(body.sessionLog) ? body.sessionLog.length : 0,
+    tabCount: Number(body.tabCount || 0),
+    openTabCount: Number(body.openTabCount || 0),
+    groupCount: Number(body.groupCount || 0),
+    asleepGroupCount: Number(body.asleepGroupCount || 0),
+    asleepTabCount: Number(body.asleepTabCount || 0),
+    groupingUseful: Number(body.studyResponses?.groupingUseful || 0),
+    trustSleepClose: Number(body.studyResponses?.trustSleepClose || 0),
+    wouldUseInRealBrowsing: Number(body.studyResponses?.wouldUseInRealBrowsing || 0),
     ratingCount: ratingHistory.length,
-    avgRating,
-    memorySaved: Number(body.memorySaved || 0),
+    avgRating: Number(body.avgRating ?? avgRating),
+    memorySaved: Number(body.memorySavedEstimateMb ?? body.memorySaved ?? 0),
+    totalTabMemoryEstimateMb: Number(body.totalTabMemoryEstimateMb || 0),
+    memoryMetricsAreEstimated: body.memoryMetricsAreEstimated !== false,
     visitCount: Number(body.visitCount || 0),
     payload: body,
   }
@@ -99,10 +159,20 @@ export async function POST(request) {
         participant_id,
         received_at,
         exported_at,
+        tab_count,
+        open_tab_count,
+        group_count,
+        asleep_group_count,
+        asleep_tab_count,
+        grouping_useful,
+        trust_sleep_close,
+        would_use_in_real_browsing,
         session_count,
         rating_count,
         avg_rating,
         memory_saved,
+        total_tab_memory_estimate_mb,
+        memory_metrics_are_estimated,
         visit_count,
         payload
       ) VALUES (
@@ -110,10 +180,20 @@ export async function POST(request) {
         ${submission.participantId},
         ${submission.receivedAt},
         ${submission.exportedAt},
+        ${submission.tabCount},
+        ${submission.openTabCount},
+        ${submission.groupCount},
+        ${submission.asleepGroupCount},
+        ${submission.asleepTabCount},
+        ${submission.groupingUseful},
+        ${submission.trustSleepClose},
+        ${submission.wouldUseInRealBrowsing},
         ${submission.sessionCount},
         ${submission.ratingCount},
         ${submission.avgRating},
         ${submission.memorySaved},
+        ${submission.totalTabMemoryEstimateMb},
+        ${submission.memoryMetricsAreEstimated},
         ${submission.visitCount},
         ${JSON.stringify(submission.payload)}::jsonb
       )
@@ -143,11 +223,22 @@ export async function GET() {
         participant_id AS "participantId",
         received_at AS "receivedAt",
         exported_at AS "exportedAt",
+        tab_count AS "tabCount",
+        open_tab_count AS "openTabCount",
+        group_count AS "groupCount",
+        asleep_group_count AS "asleepGroupCount",
+        asleep_tab_count AS "asleepTabCount",
+        grouping_useful AS "groupingUseful",
+        trust_sleep_close AS "trustSleepClose",
+        would_use_in_real_browsing AS "wouldUseInRealBrowsing",
         session_count AS "sessionCount",
         rating_count AS "ratingCount",
         avg_rating AS "avgRating",
         memory_saved AS "memorySaved",
-        visit_count AS "visitCount"
+        total_tab_memory_estimate_mb AS "totalTabMemoryEstimateMb",
+        memory_metrics_are_estimated AS "memoryMetricsAreEstimated",
+        visit_count AS "visitCount",
+        payload
       FROM study_submissions
       ORDER BY received_at DESC
     `
