@@ -1,26 +1,42 @@
 # tab-agent-web
 
-Website, study backend, admin dashboard, and OpenAI summary API for [Tab Agent](https://github.com/MaykaS/tab_agent).
+This repo is the **website and backend** for Tab Agent.
 
-This repo is **not** the Chrome extension itself.
+It is **not** the Chrome extension itself.
 
-## Repo responsibility
+## Repo split
 
-- **This repo (`tab_agent_web`)**
-  - landing site
-  - study submission API
-  - Neon Postgres storage
-  - admin analytics
-  - OpenAI-assisted policy summary endpoint
+There are two repos:
 
-- **Extension repo (`tab_agent`)**
-  - popup
-  - background service worker
-  - local autonomous policy
-  - Stats page
-  - feedback loop
+- **`tab_agent`** - Chrome extension runtime
+- **`tab_agent_web`** - website, API, storage, admin, and OpenAI summaries
 
-If you want browser behavior to change, you must update `tab_agent`.
+Rule of thumb:
+
+- if browser behavior should change -> edit `tab_agent`
+- if storage/admin/OpenAI summary should change -> edit `tab_agent_web`
+
+## What this repo does
+
+This repo is responsible for:
+
+- landing site
+- study submission API
+- Neon Postgres storage
+- admin analytics
+- OpenAI-assisted policy summary endpoint
+
+## What the extension repo does
+
+The extension repo is responsible for:
+
+- popup
+- background service worker
+- local autonomous policy
+- Stats page
+- feedback loop
+
+Updating this repo alone does **not** change extension behavior.
 
 ## Pages and APIs
 
@@ -51,18 +67,20 @@ OPENAI_MODEL=gpt-4.1-mini
 
 If `OPENAI_API_KEY` is missing, `/api/agent-summary` falls back to a local heuristic summary instead of failing.
 
-## Run locally
+## OpenAI role
 
-```bash
-npm install
-npm run dev
-```
+OpenAI is **advisory only**.
 
-Open [http://localhost:3000](http://localhost:3000)
+It does not control the browser directly.
 
-## Deploy
+This repo uses OpenAI for:
 
-Connected to Vercel via GitHub. Push to `main` to deploy.
+- behavior summaries
+- explanation support
+- policy-tuning recommendations
+- suggested protected contexts
+
+The extension still makes real-time sleep/wake decisions locally.
 
 ## Study data
 
@@ -86,3 +104,16 @@ Data is surfaced through:
 
 - `/api/collect`
 - `/admin`
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+## Deploy
+
+Connected to Vercel via GitHub. Push to `main` to deploy.
