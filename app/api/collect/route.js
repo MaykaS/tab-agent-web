@@ -24,9 +24,7 @@ function getSql() {
     if (!databaseUrl) {
       throw new Error('Missing Postgres connection string. Set POSTGRES_URL or DATABASE_URL.')
     }
-    sql = postgres(databaseUrl, {
-      ssl: 'require',
-    })
+    sql = postgres(databaseUrl, { ssl: 'require' })
   }
   return sql
 }
@@ -54,53 +52,36 @@ async function ensureSchema() {
       total_tab_memory_estimate_mb DOUBLE PRECISION,
       memory_metrics_are_estimated BOOLEAN NOT NULL DEFAULT TRUE,
       visit_count INTEGER NOT NULL DEFAULT 0,
+      auto_sleep_count INTEGER NOT NULL DEFAULT 0,
+      auto_wake_count INTEGER NOT NULL DEFAULT 0,
+      undo_count INTEGER NOT NULL DEFAULT 0,
+      regret_count INTEGER NOT NULL DEFAULT 0,
+      explicit_bad_count INTEGER NOT NULL DEFAULT 0,
+      explicit_good_count INTEGER NOT NULL DEFAULT 0,
+      fixed_rule_sleep_count INTEGER NOT NULL DEFAULT 0,
+      fixed_rule_memory_saved_mb DOUBLE PRECISION NOT NULL DEFAULT 0,
       payload JSONB NOT NULL
     )
   `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS participant_id TEXT
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS tab_count INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS open_tab_count INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS group_count INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS asleep_group_count INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS asleep_tab_count INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS grouping_useful INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS trust_sleep_close INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS would_use_in_real_browsing INTEGER
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS total_tab_memory_estimate_mb DOUBLE PRECISION
-  `
-  await db`
-    ALTER TABLE study_submissions
-    ADD COLUMN IF NOT EXISTS memory_metrics_are_estimated BOOLEAN NOT NULL DEFAULT TRUE
-  `
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS participant_id TEXT`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS tab_count INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS open_tab_count INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS group_count INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS asleep_group_count INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS asleep_tab_count INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS grouping_useful INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS trust_sleep_close INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS would_use_in_real_browsing INTEGER`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS total_tab_memory_estimate_mb DOUBLE PRECISION`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS memory_metrics_are_estimated BOOLEAN NOT NULL DEFAULT TRUE`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS auto_sleep_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS auto_wake_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS undo_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS regret_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS explicit_bad_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS explicit_good_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS fixed_rule_sleep_count INTEGER NOT NULL DEFAULT 0`
+  await db`ALTER TABLE study_submissions ADD COLUMN IF NOT EXISTS fixed_rule_memory_saved_mb DOUBLE PRECISION NOT NULL DEFAULT 0`
 }
 
 function buildSubmission(body) {
@@ -109,6 +90,8 @@ function buildSubmission(body) {
     ratingHistory.length > 0
       ? ratingHistory.reduce((sum, entry) => sum + (entry.avgScore || 0), 0) / ratingHistory.length
       : 0
+  const autonomousSummary = body.autonomousSummary || {}
+  const baselineComparison = body.baselineComparison || {}
 
   return {
     id: `submission_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
@@ -130,6 +113,14 @@ function buildSubmission(body) {
     totalTabMemoryEstimateMb: Number(body.totalTabMemoryEstimateMb || 0),
     memoryMetricsAreEstimated: body.memoryMetricsAreEstimated !== false,
     visitCount: Number(body.visitCount || 0),
+    autoSleepCount: Number(autonomousSummary.autoSleepCount || 0),
+    autoWakeCount: Number(autonomousSummary.autoWakeCount || 0),
+    undoCount: Number(autonomousSummary.undoCount || 0),
+    regretCount: Number(autonomousSummary.regretCount || 0),
+    explicitBadCount: Number(autonomousSummary.explicitBadCount || 0),
+    explicitGoodCount: Number(autonomousSummary.explicitGoodCount || 0),
+    fixedRuleSleepCount: Number(baselineComparison.ruleBasedSleepCount || 0),
+    fixedRuleMemorySavedMb: Number(baselineComparison.estimatedRuleMemorySavedMb || 0),
     payload: body,
   }
 }
@@ -174,6 +165,14 @@ export async function POST(request) {
         total_tab_memory_estimate_mb,
         memory_metrics_are_estimated,
         visit_count,
+        auto_sleep_count,
+        auto_wake_count,
+        undo_count,
+        regret_count,
+        explicit_bad_count,
+        explicit_good_count,
+        fixed_rule_sleep_count,
+        fixed_rule_memory_saved_mb,
         payload
       ) VALUES (
         ${submission.id},
@@ -195,6 +194,14 @@ export async function POST(request) {
         ${submission.totalTabMemoryEstimateMb},
         ${submission.memoryMetricsAreEstimated},
         ${submission.visitCount},
+        ${submission.autoSleepCount},
+        ${submission.autoWakeCount},
+        ${submission.undoCount},
+        ${submission.regretCount},
+        ${submission.explicitBadCount},
+        ${submission.explicitGoodCount},
+        ${submission.fixedRuleSleepCount},
+        ${submission.fixedRuleMemorySavedMb},
         ${JSON.stringify(submission.payload)}::jsonb
       )
     `
@@ -203,7 +210,6 @@ export async function POST(request) {
       { success: true, id: submission.id },
       { headers: CORS_HEADERS }
     )
-
   } catch (err) {
     console.error('Collect error:', err)
     return NextResponse.json(
@@ -238,6 +244,14 @@ export async function GET() {
         total_tab_memory_estimate_mb AS "totalTabMemoryEstimateMb",
         memory_metrics_are_estimated AS "memoryMetricsAreEstimated",
         visit_count AS "visitCount",
+        auto_sleep_count AS "autoSleepCount",
+        auto_wake_count AS "autoWakeCount",
+        undo_count AS "undoCount",
+        regret_count AS "regretCount",
+        explicit_bad_count AS "explicitBadCount",
+        explicit_good_count AS "explicitGoodCount",
+        fixed_rule_sleep_count AS "fixedRuleSleepCount",
+        fixed_rule_memory_saved_mb AS "fixedRuleMemorySavedMb",
         payload
       FROM study_submissions
       ORDER BY received_at DESC
