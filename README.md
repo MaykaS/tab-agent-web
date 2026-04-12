@@ -27,6 +27,7 @@ This repo is responsible for:
 - OpenAI-assisted policy summary endpoint
 - context benchmark harness
 - offline policy-training utility
+- live admin training dashboard with polling graphs
 
 ## What the extension repo does
 
@@ -115,6 +116,16 @@ Data is surfaced through:
 
 - `/api/collect`
 - `/admin`
+
+The admin page now refreshes on a polling loop and visualizes:
+
+- reward trend
+- regret-rate trend
+- memory-saved trend
+- memory-saved vs regret scatter
+- outcome breakdown
+- top regret contexts
+- offline policy-training recommendations derived from submitted training examples
 
 ## Run locally
 
