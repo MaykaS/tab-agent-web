@@ -341,21 +341,37 @@ export default function Admin() {
     { label: 'Protect', value: dashboard.outcomeCounts.protect },
   ]
 
+  const sectionTitleStyle = {
+    fontSize: '14px',
+    fontWeight: '700',
+    color: '#1F4E79',
+    marginBottom: '12px',
+    letterSpacing: '.02em',
+  }
+
   return (
-    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '40px', maxWidth: '1180px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <a href="/" style={{ color: '#2E75B6', fontSize: '14px' }}><span aria-hidden="true">&larr;</span> Tab Agent</a>
-        <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1F4E79', marginTop: '12px' }}>
+    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '40px', maxWidth: '1180px', margin: '0 auto', background: '#fbfcfe' }}>
+      <div style={{ marginBottom: '24px', padding: '24px 26px', background: 'linear-gradient(180deg, #ffffff 0%, #f6fbff 100%)', border: '1px solid #dfeaf5', borderRadius: '16px', boxShadow: '0 6px 20px rgba(31,78,121,0.05)' }}>
+        <a href="/" style={{ color: '#2E75B6', fontSize: '14px', textDecoration: 'none', fontWeight: '600' }}><span aria-hidden="true">&larr;</span> Back to Tab Agent</a>
+        <h1 style={{ fontSize: '30px', fontWeight: '700', color: '#1F4E79', marginTop: '12px' }}>
           Study Admin
         </h1>
-        <p style={{ color: '#666', fontSize: '14px', marginTop: '4px' }}>
-          Live telemetry, learning signals, and policy-tuning views from the extension. Polling every 30 seconds.
+        <p style={{ color: '#555', fontSize: '15px', marginTop: '8px', maxWidth: '780px', lineHeight: '1.7' }}>
+          This dashboard turns submitted extension sessions into a research view of the agent: live telemetry, reward and regret trends, and early policy-training signals. It refreshes automatically every 30 seconds as new submissions arrive.
         </p>
-        {lastUpdated && (
-          <div style={{ fontSize: '12px', color: '#888', marginTop: '6px' }}>
-            Last updated {lastUpdated.toLocaleTimeString()}
-          </div>
-        )}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '14px' }}>
+          <span style={{ fontSize: '12px', padding: '6px 10px', borderRadius: '999px', background: '#eef5fb', color: '#1F4E79', fontWeight: '600' }}>
+            Polling every 30s
+          </span>
+          <span style={{ fontSize: '12px', padding: '6px 10px', borderRadius: '999px', background: '#f5f5f5', color: '#666', fontWeight: '600' }}>
+            Live data from /api/collect
+          </span>
+          {lastUpdated && (
+            <span style={{ fontSize: '12px', padding: '6px 10px', borderRadius: '999px', background: '#f8f8f8', color: '#888', fontWeight: '600' }}>
+              Last updated {lastUpdated.toLocaleTimeString()}
+            </span>
+          )}
+        </div>
       </div>
 
       {loading && <p style={{ color: '#666' }}>Loading...</p>}
@@ -363,6 +379,8 @@ export default function Admin() {
 
       {data && (
         <>
+          <section style={{ marginBottom: '24px' }}>
+            <div style={sectionTitleStyle}>Top-level metrics</div>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
             <StatCard label="Submissions" value={data.count} />
             <StatCard label="Total sessions logged" value={totalSessions} />
@@ -373,14 +391,20 @@ export default function Admin() {
             <StatCard label="Avg undo rate" value={avgUndoRate.toFixed(1)} />
             <StatCard label="Average rating" value={`${avgRating.toFixed(1)}/5`} />
           </div>
+          </section>
 
+          <section style={{ marginBottom: '24px' }}>
+            <div style={sectionTitleStyle}>Trend view</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '24px' }}>
             <TrendChart title="Reward trend" points={dashboard.trend} valueKey="avgReward" color="#1F4E79" />
             <TrendChart title="Regret-rate trend" points={dashboard.trend} valueKey="regretRate" color="#B26D00" yFormatter={(value) => `${Math.round(value * 100)}%`} />
             <TrendChart title="Memory-saved trend" points={dashboard.trend} valueKey="memorySaved" color="#2E7D32" yFormatter={(value) => `${Math.round(value)} MB`} />
             <ScatterChart title="Memory saved vs regret rate" points={dashboard.scatter} />
           </div>
+          </section>
 
+          <section style={{ marginBottom: '24px' }}>
+            <div style={sectionTitleStyle}>Learning signals</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '24px' }}>
             <MiniBarChart title="Outcome breakdown" items={outcomeItems} color="#1F4E79" />
             <MiniBarChart
@@ -396,6 +420,9 @@ export default function Admin() {
               <div style={{ fontSize: '12px', fontWeight: '700', color: '#1F4E79', marginBottom: '12px' }}>
                 Offline training recommendation
               </div>
+              <div style={{ fontSize: '12px', color: '#666', lineHeight: '1.6', marginBottom: '10px' }}>
+                This is a lightweight offline policy suggestion based on submitted training examples. It is meant for analysis, not automatic deployment.
+              </div>
               {recommendation ? (
                 <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.7' }}>
                   <div>Examples: <strong>{recommendation.exampleCount}</strong></div>
@@ -409,16 +436,22 @@ export default function Admin() {
                 <div style={{ fontSize: '12px', color: '#888' }}>
                   No training examples yet. Once submissions include enough auto-sleep outcomes, this panel will recommend a threshold update.
                 </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
+          </section>
 
           {submissions.length > 0 ? (
+            <section>
+              <div style={sectionTitleStyle}>Submitted sessions</div>
+              <div style={{ fontSize: '13px', color: '#666', marginBottom: '12px', lineHeight: '1.6' }}>
+                Each submission includes the browser snapshot, autonomous outcomes, and learning signals. Expand a session only when you want the detailed trace.
+              </div>
             <div style={{ display: 'grid', gap: '16px' }}>
               {submissions.map((submission, index) => {
                 const payload = submission.payload || {}
                 return (
-                  <div
+                  <details
                     key={submission.id}
                     style={{
                       border: '1px solid #e8e8e8',
@@ -427,7 +460,7 @@ export default function Admin() {
                       overflow: 'hidden',
                     }}
                   >
-                    <div style={{ padding: '16px 18px', borderBottom: '1px solid #eee' }}>
+                    <summary style={{ padding: '16px 18px', borderBottom: '1px solid #eee', cursor: 'pointer', listStyle: 'none' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
                         <div>
                           <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
@@ -465,7 +498,7 @@ export default function Admin() {
                           ))}
                         </div>
                       </div>
-                    </div>
+                    </summary>
 
                     <div style={{ padding: '16px 18px', display: 'grid', gap: '16px' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
@@ -537,10 +570,11 @@ export default function Admin() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </details>
                 )
               })}
             </div>
+            </section>
           ) : (
             <div
               style={{
