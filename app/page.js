@@ -60,6 +60,7 @@ export default function Home() {
         <div className={styles.navLinks}>
           <a href="/demo">Demo</a>
           <a href="/evals">Evals</a>
+          <a href="/admin">Admin</a>
           <a href="https://github.com/MaykaS/tab_agent" target="_blank" rel="noopener">
             GitHub
           </a>
@@ -90,6 +91,9 @@ export default function Home() {
             </a>
             <a href="/demo" className={styles.btnSecondary}>
               Guided walkthrough
+            </a>
+            <a href="/admin" className={styles.btnSecondary}>
+              Live admin dashboard
             </a>
           </div>
         </div>
@@ -159,6 +163,10 @@ export default function Home() {
             The optional backend layer adds study submission, admin review, and OpenAI-assisted
             policy summaries. OpenAI is advisory only and does not control real-time browser
             actions.
+          </p>
+          <p className={styles.sectionText} style={{ marginTop: '12px' }}>
+            You can inspect the live telemetry and training-style graphs on{' '}
+            <a href="/admin">/admin</a>.
           </p>
         </div>
       </section>
@@ -264,6 +272,7 @@ chrome://flags/#optimization-guide-on-device-model
               </a>
               <a href="/demo">Demo</a>
               <a href="/evals">Evals</a>
+              <a href="/admin">Admin</a>
             </div>
           </div>
         </div>

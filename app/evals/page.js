@@ -35,6 +35,7 @@ export default function Evals() {
           <a href="/evals" style={{ color: 'var(--blue-mid)', fontWeight: 600 }}>
             Evals
           </a>
+          <a href="/admin">Admin</a>
           <a href="https://github.com/MaykaS/tab_agent" target="_blank" rel="noopener">
             GitHub
           </a>
@@ -122,6 +123,15 @@ export default function Evals() {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className={styles.modelComparison}>
+            <h2>Live telemetry</h2>
+            <p>
+              The current web app also includes a live admin dashboard at <a href="/admin">/admin</a>{' '}
+              for inspecting submitted sessions, reward trends, regret rate, and policy-training
+              signals over time.
+            </p>
           </div>
         </div>
       </section>

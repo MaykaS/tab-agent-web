@@ -52,6 +52,14 @@ Updating this repo alone does **not** change extension behavior.
 | `/api/collect` | Receive and return anonymized study submissions |
 | `/api/agent-summary` | Send structured behavioral summaries to OpenAI and return policy recommendations |
 
+The site navigation now links directly to:
+
+- `/demo`
+- `/evals`
+- `/admin`
+
+so the admin dashboard is discoverable from the live product site instead of acting like a hidden internal route.
+
 ## Stack
 
 - Next.js 14 (App Router)

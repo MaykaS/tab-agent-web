@@ -36,6 +36,7 @@ export default function Demo() {
             Demo
           </a>
           <a href="/evals">Evals</a>
+          <a href="/admin">Admin</a>
           <a href="https://github.com/MaykaS/tab_agent" target="_blank" rel="noopener">
             GitHub
           </a>
@@ -99,6 +100,10 @@ export default function Demo() {
               The extension is the real product surface: popup, background service worker, local
               autonomous policy, Stats page, and feedback loop. The website/backend supports
               deployment, study collection, admin review, and optional OpenAI-powered summaries.
+            </p>
+            <p style={{ fontSize: '15px', lineHeight: 1.7, color: '#555', marginTop: '10px' }}>
+              If you want to inspect live submissions, reward/regret trends, and training-style
+              policy signals, go to <a href="/admin">/admin</a>.
             </p>
           </div>
         </div>
