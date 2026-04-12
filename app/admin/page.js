@@ -140,6 +140,7 @@ export default function Admin() {
                           { label: 'Avg rating', value: `${(submission.avgRating || 0).toFixed(1)}/5` },
                           { label: 'Autonomous memory', value: `${(submission.memorySaved || 0).toFixed(0)} MB est.` },
                           { label: 'Rule baseline', value: `${(submission.fixedRuleMemorySavedMb || 0).toFixed(0)} MB est.` },
+                          { label: 'Training examples', value: payload.trainingExamples?.length || 0 },
                         ].map((item) => (
                           <div key={item.label} style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: '8px', padding: '12px' }}>
                             <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px' }}>
@@ -158,6 +159,22 @@ export default function Admin() {
                           <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.6' }}>
                             {payload.openAiPolicySummary.summary}
                           </div>
+                        </div>
+                      )}
+
+                      {payload.adaptivePolicySummary?.effectivePolicy && (
+                        <div style={{ padding: '12px 14px', background: '#fbfaf5', border: '1px solid #eee3c2', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: '#8a6d1d', marginBottom: '6px' }}>
+                            Adaptive policy summary
+                          </div>
+                          <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.6' }}>
+                            Sleep threshold: {payload.adaptivePolicySummary.effectivePolicy.sleepThreshold} | Min inactive: {payload.adaptivePolicySummary.effectivePolicy.minInactiveMinutes} min | Recent protect: {payload.adaptivePolicySummary.effectivePolicy.recentProtectMinutes} min
+                          </div>
+                          {Array.isArray(payload.adaptivePolicySummary.notes) && payload.adaptivePolicySummary.notes.length > 0 && (
+                            <div style={{ fontSize: '12px', color: '#666', marginTop: '6px' }}>
+                              {payload.adaptivePolicySummary.notes.join(' ')}
+                            </div>
+                          )}
                         </div>
                       )}
 

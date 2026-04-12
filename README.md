@@ -25,6 +25,8 @@ This repo is responsible for:
 - Neon Postgres storage
 - admin analytics
 - OpenAI-assisted policy summary endpoint
+- context benchmark harness
+- offline policy-training utility
 
 ## What the extension repo does
 
@@ -82,6 +84,12 @@ This repo uses OpenAI for:
 
 The extension still makes real-time sleep/wake decisions locally.
 
+Supported context variants for summaries/benchmarking:
+
+- `summary_only`
+- `raw_log_only`
+- `hybrid`
+
 ## Study data
 
 The extension submits anonymized snapshots to `/api/collect`.
@@ -95,6 +103,9 @@ Stored data can include:
 - per-group snapshots
 - autonomous action logs
 - feedback outcomes
+- raw tab event log
+- adaptive policy summary
+- training examples for offline learning
 - protection signals
 - rule-baseline comparison data
 - self-report survey responses
@@ -113,6 +124,13 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
+
+Benchmark and training utilities:
+
+```bash
+npm run benchmark:context
+npm run train:policy -- path/to/export.json
+```
 
 ## Deploy
 

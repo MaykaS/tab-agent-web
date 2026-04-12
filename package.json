@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "benchmark:context": "node scripts/context-benchmark.mjs"
+    "benchmark:context": "node scripts/context-benchmark.mjs",
+    "train:policy": "node scripts/offline-train-policy.mjs"
   },
   "dependencies": {
     "next": "14.2.3",
