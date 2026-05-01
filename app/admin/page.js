@@ -373,7 +373,7 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
     },
   }
 
-  const palette = tones[tone] || tones.neutral
+  const tonePalette = tones[tone] || tones.neutral
 
   return (
     <div
@@ -381,8 +381,8 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
         minWidth: priority ? '132px' : '104px',
         padding: priority ? '12px 14px' : '10px 12px',
         borderRadius: '14px',
-        background: palette.background,
-        border: `1px solid ${palette.border}`,
+        background: tonePalette.background,
+        border: `1px solid ${tonePalette.border}`,
         display: 'grid',
         gap: '4px',
       }}
@@ -390,7 +390,7 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
       <div
         style={{
           fontSize: '11px',
-          color: palette.label,
+          color: tonePalette.label,
           textTransform: 'uppercase',
           letterSpacing: '.06em',
           fontWeight: '700',
@@ -398,7 +398,7 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
       >
         {label}
       </div>
-      <div style={{ fontSize: priority ? '22px' : '18px', fontWeight: '800', color: palette.value }}>
+      <div style={{ fontSize: priority ? '22px' : '18px', fontWeight: '800', color: tonePalette.value }}>
         {value}
       </div>
     </div>
