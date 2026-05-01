@@ -16,6 +16,13 @@ function formatNumber(value, digits = 1) {
   return Number(value || 0).toFixed(digits)
 }
 
+function formatCompactNumber(value) {
+  return new Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(Number(value || 0))
+}
+
 function aggregateDashboard(submissions) {
   const trend = submissions
     .slice()
@@ -285,6 +292,66 @@ function ScatterChart({ title, points }) {
   )
 }
 
+function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false }) {
+  const tones = {
+    neutral: {
+      background: '#f5f8fc',
+      border: '#dce8f5',
+      label: '#5f7590',
+      value: '#1F4E79',
+    },
+    positive: {
+      background: '#f4fbf5',
+      border: '#d4ead8',
+      label: '#5d7d65',
+      value: '#2E7D32',
+    },
+    warning: {
+      background: '#fff8ee',
+      border: '#f1dfba',
+      label: '#8a6d1d',
+      value: '#b26d00',
+    },
+    danger: {
+      background: '#fff3f1',
+      border: '#f2d4cf',
+      label: '#9b5549',
+      value: '#c04b37',
+    },
+  }
+
+  const palette = tones[tone] || tones.neutral
+
+  return (
+    <div
+      style={{
+        minWidth: priority ? '132px' : '104px',
+        padding: priority ? '12px 14px' : '10px 12px',
+        borderRadius: '14px',
+        background: palette.background,
+        border: `1px solid ${palette.border}`,
+        display: 'grid',
+        gap: '4px',
+      }}
+    >
+      <div
+        style={{
+          fontSize: '11px',
+          color: palette.label,
+          textTransform: 'uppercase',
+          letterSpacing: '.06em',
+          fontWeight: '700',
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ fontSize: priority ? '22px' : '18px', fontWeight: '800', color: palette.value }}>
+        {value}
+      </div>
+    </div>
+  )
+}
+
 export default function Admin() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -347,6 +414,14 @@ export default function Admin() {
     color: '#1F4E79',
     marginBottom: '12px',
     letterSpacing: '.02em',
+  }
+
+  const cardShellStyle = {
+    border: '1px solid #dfe8f1',
+    borderRadius: '18px',
+    background: '#fff',
+    overflow: 'hidden',
+    boxShadow: '0 8px 24px rgba(31,78,121,0.04)',
   }
 
   return (
@@ -450,97 +525,189 @@ export default function Admin() {
             <div style={{ display: 'grid', gap: '16px' }}>
               {submissions.map((submission, index) => {
                 const payload = submission.payload || {}
+                const regretRate = submission.autoSleepCount
+                  ? Number(submission.regretCount || 0) / Number(submission.autoSleepCount || 1)
+                  : 0
+                const undoRate = submission.autoSleepCount
+                  ? Number(submission.undoCount || 0) / Number(submission.autoSleepCount || 1)
+                  : 0
+                const regretTone = regretRate >= 0.35 ? 'danger' : regretRate >= 0.18 ? 'warning' : 'positive'
+                const undoTone = undoRate >= 0.18 ? 'warning' : undoRate > 0 ? 'neutral' : 'positive'
+                const memoryLift = Number(submission.memorySaved || 0) - Number(submission.fixedRuleMemorySavedMb || 0)
+                const memoryTone = memoryLift >= 0 ? 'positive' : 'warning'
+                const sessionSubtitle = payload.autonomyState?.mode === 'trusted_autonomy'
+                  ? 'Trusted autonomy active'
+                  : 'Observation-first session'
+
                 return (
                   <details
                     key={submission.id}
                     style={{
-                      border: '1px solid #e8e8e8',
-                      borderRadius: '10px',
+                      ...cardShellStyle,
                       background: index % 2 === 0 ? '#fff' : '#fcfcfc',
-                      overflow: 'hidden',
                     }}
                   >
-                    <summary style={{ padding: '16px 18px', borderBottom: '1px solid #eee', cursor: 'pointer', listStyle: 'none' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-                        <div>
-                          <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
-                            {new Date(submission.receivedAt).toLocaleString()}
-                          </div>
-                          <div style={{ fontSize: '18px', fontWeight: '700', color: '#1F4E79' }}>
-                            Participant {submission.participantId || 'anonymous'}
-                          </div>
-                          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', fontFamily: 'monospace' }}>
-                            {submission.id}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                          {[
-                            `Tabs ${submission.tabCount ?? 0}`,
-                            `Groups ${submission.groupCount ?? 0}`,
-                            `Auto-sleeps ${submission.autoSleepCount ?? 0}`,
-                            `Auto-wakes ${submission.autoWakeCount ?? 0}`,
-                            `Undos ${submission.undoCount ?? 0}`,
-                            `Regrets ${submission.regretCount ?? 0}`,
-                          ].map((item) => (
+                    <summary
+                      style={{
+                        padding: '20px 22px',
+                        borderBottom: '1px solid #edf2f7',
+                        cursor: 'pointer',
+                        listStyle: 'none',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                        <div style={{ display: 'grid', gap: '10px', minWidth: '250px', flex: '1 1 320px' }}>
+                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                             <span
-                              key={item}
                               style={{
-                                fontSize: '12px',
+                                fontSize: '11px',
+                                color: '#6c7f93',
+                                textTransform: 'uppercase',
+                                letterSpacing: '.06em',
+                                fontWeight: '700',
                                 padding: '6px 10px',
                                 borderRadius: '999px',
-                                background: '#f0f6fb',
-                                color: '#1F4E79',
-                                fontWeight: '600',
+                                background: '#f4f8fc',
+                                border: '1px solid #dfe8f1',
                               }}
                             >
-                              {item}
+                              {sessionSubtitle}
                             </span>
-                          ))}
+                            <span style={{ fontSize: '12px', color: '#7e8ea0' }}>
+                              {new Date(submission.receivedAt).toLocaleString()}
+                            </span>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '24px', fontWeight: '800', color: '#1F4E79', lineHeight: '1.15' }}>
+                              Participant {submission.participantId || 'anonymous'}
+                            </div>
+                            <div style={{ fontSize: '13px', color: '#536475', marginTop: '6px', lineHeight: '1.6', maxWidth: '620px' }}>
+                              {submission.autoSleepCount || submission.autoWakeCount
+                                ? 'Snapshot includes autonomous outcomes, feedback signals, and memory estimates for this session.'
+                                : 'Snapshot captured grouping behavior and trust signals before autonomous actions started.'}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <span style={{ fontSize: '12px', color: '#7b8b9b', fontFamily: 'monospace' }}>
+                              {submission.id}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '12px',
+                                color: '#4b6784',
+                                background: '#eef5fb',
+                                border: '1px solid #d9e7f5',
+                                padding: '5px 9px',
+                                borderRadius: '999px',
+                                fontWeight: '700',
+                              }}
+                            >
+                              {submission.tabCount ?? 0} tabs
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '12px',
+                                color: '#4b6784',
+                                background: '#eef5fb',
+                                border: '1px solid #d9e7f5',
+                                padding: '5px 9px',
+                                borderRadius: '999px',
+                                fontWeight: '700',
+                              }}
+                            >
+                              {submission.groupCount ?? 0} groups
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gap: '12px', flex: '1 1 420px', minWidth: '280px' }}>
+                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                            <SessionSummaryMetric
+                              label="Auto-sleeps"
+                              value={formatCompactNumber(submission.autoSleepCount ?? 0)}
+                              tone="neutral"
+                              priority
+                            />
+                            <SessionSummaryMetric
+                              label="Regrets"
+                              value={formatCompactNumber(submission.regretCount ?? 0)}
+                              tone={regretTone}
+                              priority
+                            />
+                            <SessionSummaryMetric
+                              label="Undos"
+                              value={formatCompactNumber(submission.undoCount ?? 0)}
+                              tone={undoTone}
+                              priority
+                            />
+                          </div>
+                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                            <SessionSummaryMetric label="Auto-wakes" value={formatCompactNumber(submission.autoWakeCount ?? 0)} tone="positive" />
+                            <SessionSummaryMetric
+                              label="Memory lift"
+                              value={`${memoryLift >= 0 ? '+' : ''}${formatCompactNumber(memoryLift)} MB`}
+                              tone={memoryTone}
+                            />
+                            <SessionSummaryMetric
+                              label="Trust"
+                              value={submission.trustSleepClose ? `${submission.trustSleepClose}/5` : '-'}
+                              tone="neutral"
+                            />
+                          </div>
                         </div>
                       </div>
                     </summary>
 
-                    <div style={{ padding: '16px 18px', display: 'grid', gap: '16px' }}>
+                    <div style={{ padding: '18px 22px 22px', display: 'grid', gap: '16px', background: '#fbfdff' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
                         {[
                           { label: 'Useful', value: submission.groupingUseful || '-' },
-                          { label: 'Trust', value: submission.trustSleepClose || '-' },
                           { label: 'Would use', value: submission.wouldUseInRealBrowsing || '-' },
                           { label: 'Avg rating', value: `${(submission.avgRating || 0).toFixed(1)}/5` },
+                          { label: 'Regret rate', value: `${Math.round(regretRate * 100)}%` },
                           { label: 'Autonomous memory', value: `${(submission.memorySaved || 0).toFixed(0)} MB est.` },
                           { label: 'Rule baseline', value: `${(submission.fixedRuleMemorySavedMb || 0).toFixed(0)} MB est.` },
                           { label: 'Training examples', value: payload.trainingExamples?.length || 0 },
                         ].map((item) => (
-                          <div key={item.label} style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: '8px', padding: '12px' }}>
-                            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px' }}>
+                          <div
+                            key={item.label}
+                            style={{
+                              background: '#fff',
+                              border: '1px solid #e6edf5',
+                              borderRadius: '12px',
+                              padding: '12px 13px',
+                              boxShadow: '0 2px 8px rgba(31,78,121,0.03)',
+                            }}
+                          >
+                            <div style={{ fontSize: '11px', color: '#7e8ea0', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px', fontWeight: '700' }}>
                               {item.label}
                             </div>
-                            <div style={{ fontSize: '18px', fontWeight: '700', color: '#333' }}>{item.value}</div>
+                            <div style={{ fontSize: '18px', fontWeight: '800', color: '#274866' }}>{item.value}</div>
                           </div>
                         ))}
                       </div>
 
                       {payload.openAiPolicySummary?.summary && (
-                        <div style={{ padding: '12px 14px', background: '#f7fbff', border: '1px solid #d9ecfb', borderRadius: '8px' }}>
+                        <div style={{ padding: '14px 15px', background: '#f6fbff', border: '1px solid #d9ecfb', borderRadius: '12px' }}>
                           <div style={{ fontSize: '12px', fontWeight: '700', color: '#1F4E79', marginBottom: '6px' }}>
                             OpenAI policy summary
                           </div>
-                          <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.6' }}>
+                          <div style={{ fontSize: '13px', color: '#4f6172', lineHeight: '1.7' }}>
                             {payload.openAiPolicySummary.summary}
                           </div>
                         </div>
                       )}
 
                       {payload.adaptivePolicySummary?.effectivePolicy && (
-                        <div style={{ padding: '12px 14px', background: '#fbfaf5', border: '1px solid #eee3c2', borderRadius: '8px' }}>
+                        <div style={{ padding: '14px 15px', background: '#fffaf0', border: '1px solid #eee3c2', borderRadius: '12px' }}>
                           <div style={{ fontSize: '12px', fontWeight: '700', color: '#8a6d1d', marginBottom: '6px' }}>
                             Adaptive policy summary
                           </div>
-                          <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.6' }}>
+                          <div style={{ fontSize: '13px', color: '#5f573b', lineHeight: '1.7' }}>
                             Sleep threshold: {payload.adaptivePolicySummary.effectivePolicy.sleepThreshold} | Min inactive: {payload.adaptivePolicySummary.effectivePolicy.minInactiveMinutes} min | Recent protect: {payload.adaptivePolicySummary.effectivePolicy.recentProtectMinutes} min
                           </div>
                           {Array.isArray(payload.adaptivePolicySummary.notes) && payload.adaptivePolicySummary.notes.length > 0 && (
-                            <div style={{ fontSize: '12px', color: '#666', marginTop: '6px' }}>
+                            <div style={{ fontSize: '12px', color: '#786d49', marginTop: '6px', lineHeight: '1.6' }}>
                               {payload.adaptivePolicySummary.notes.join(' ')}
                             </div>
                           )}
@@ -554,14 +721,14 @@ export default function Admin() {
                           </div>
                           <div style={{ display: 'grid', gap: '8px' }}>
                             {payload.actionLog.slice(0, 5).map((action) => (
-                              <div key={action.id} style={{ padding: '10px 12px', border: '1px solid #eee', borderRadius: '8px', background: '#fafafa' }}>
+                              <div key={action.id} style={{ padding: '11px 13px', border: '1px solid #e8eef4', borderRadius: '10px', background: '#fff' }}>
                                 <div style={{ fontSize: '12px', fontWeight: '700', color: action.type === 'auto_sleep' ? '#b26d00' : '#1F4E79' }}>
                                   {action.type.replace('_', ' ')} | confidence {(Number(action.confidence || 0) * 100).toFixed(0)}%
                                 </div>
-                                <div style={{ fontSize: '12px', color: '#555', marginTop: '4px', lineHeight: '1.6' }}>
+                                <div style={{ fontSize: '12px', color: '#576776', marginTop: '4px', lineHeight: '1.6' }}>
                                   {action.reason}
                                 </div>
-                                <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
+                                <div style={{ fontSize: '12px', color: '#7e8ea0', marginTop: '4px' }}>
                                   Outcome: {action.outcome?.status || 'pending'}
                                 </div>
                               </div>
