@@ -42,6 +42,39 @@ function formatCompactNumber(value) {
   }).format(Number(value || 0))
 }
 
+function parsePayload(payload) {
+  if (!payload) return {}
+  if (typeof payload === 'object') return payload
+  if (typeof payload !== 'string') return {}
+  try {
+    return JSON.parse(payload)
+  } catch {
+    return {}
+  }
+}
+
+function normalizeSubmission(submission) {
+  const payload = parsePayload(submission?.payload)
+  return {
+    ...submission,
+    payload,
+    tabCount: Number(submission?.tabCount || 0),
+    groupCount: Number(submission?.groupCount || 0),
+    autoSleepCount: Number(submission?.autoSleepCount || 0),
+    autoWakeCount: Number(submission?.autoWakeCount || 0),
+    undoCount: Number(submission?.undoCount || 0),
+    regretCount: Number(submission?.regretCount || 0),
+    memorySaved: Number(submission?.memorySaved || 0),
+    fixedRuleMemorySavedMb: Number(submission?.fixedRuleMemorySavedMb || 0),
+    avgRating: Number(submission?.avgRating || 0),
+    trustSleepClose: Number(submission?.trustSleepClose || 0),
+    groupingUseful: Number(submission?.groupingUseful || 0),
+    wouldUseInRealBrowsing: Number(submission?.wouldUseInRealBrowsing || 0),
+    sessionCount: Number(submission?.sessionCount || 0),
+    ratingCount: Number(submission?.ratingCount || 0),
+  }
+}
+
 function aggregateDashboard(submissions) {
   const trend = submissions
     .slice()
@@ -384,6 +417,9 @@ export default function Admin() {
     async function load() {
       try {
         const response = await fetch('/api/collect', { cache: 'no-store' })
+        if (!response.ok) {
+          throw new Error(`Failed to load study data (${response.status})`)
+        }
         const json = await response.json()
         if (cancelled) return
         setData(json)
@@ -404,7 +440,10 @@ export default function Admin() {
     }
   }, [])
 
-  const submissions = data?.submissions || []
+  const submissions = useMemo(() => {
+    if (!Array.isArray(data?.submissions)) return []
+    return data.submissions.map(normalizeSubmission)
+  }, [data])
   const dashboard = useMemo(() => aggregateDashboard(submissions), [submissions])
   const recommendation = useMemo(() => findTrainingRecommendation(submissions), [submissions])
 
