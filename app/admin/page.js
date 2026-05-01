@@ -3,23 +3,23 @@ import { useEffect, useMemo, useState } from 'react'
 
 const POLL_INTERVAL_MS = 30000
 const palette = {
-  page: '#f5f1ea',
-  surface: '#fffdfa',
-  surfaceAlt: '#f8f4ed',
-  border: '#ddd2c2',
-  borderSoft: '#ebe2d6',
+  page: '#ffffff',
+  surface: '#ffffff',
+  surfaceAlt: '#ffffff',
+  border: '#dde4ec',
+  borderSoft: '#e8edf3',
   ink: '#213547',
   muted: '#66717d',
   subtle: '#8a948f',
   accent: '#183b5b',
-  accentSoft: '#eef4f8',
+  accentSoft: '#f6f9fc',
   success: '#2f6b46',
-  successSoft: '#edf7ef',
+  successSoft: '#f5faf6',
   warning: '#9a6a1f',
-  warningSoft: '#fdf6e9',
+  warningSoft: '#fdfaf4',
   danger: '#a65246',
-  dangerSoft: '#fdf0ee',
-  shadow: '0 18px 40px rgba(24, 37, 52, 0.06)',
+  dangerSoft: '#fdf6f5',
+  shadow: '0 8px 24px rgba(16, 24, 40, 0.04)',
 }
 
 function outcomeToReward(outcome) {
@@ -250,7 +250,7 @@ function StatCard({ label, value }) {
         border: `1px solid ${palette.borderSoft}`,
         borderRadius: '18px',
         padding: '18px 18px 16px',
-        boxShadow: '0 6px 16px rgba(24, 37, 52, 0.04)',
+        boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)',
       }}
     >
       <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px', fontWeight: '700' }}>
@@ -264,7 +264,7 @@ function StatCard({ label, value }) {
 function MiniBarChart({ title, items, color = '#1F4E79', formatter = (value) => value }) {
   const max = Math.max(...items.map((item) => item.value), 1)
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 6px 16px rgba(24, 37, 52, 0.04)' }}>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
       <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '14px', letterSpacing: '-0.01em' }}>{title}</div>
       <div style={{ display: 'grid', gap: '10px' }}>
         {items.map((item) => (
@@ -273,7 +273,7 @@ function MiniBarChart({ title, items, color = '#1F4E79', formatter = (value) => 
               <span style={{ color: palette.muted, fontWeight: '600' }}>{item.label}</span>
               <span style={{ color: palette.subtle }}>{formatter(item.value)}</span>
             </div>
-            <div style={{ height: '10px', background: '#efe8de', borderRadius: '999px', overflow: 'hidden' }}>
+            <div style={{ height: '10px', background: '#edf2f7', borderRadius: '999px', overflow: 'hidden' }}>
               <div style={{ width: `${(item.value / max) * 100}%`, height: '100%', background: color, borderRadius: '999px' }} />
             </div>
           </div>
@@ -296,7 +296,7 @@ function TrendChart({ title, points, color, valueKey, yFormatter = (value) => va
   }).join(' ')
 
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 6px 16px rgba(24, 37, 52, 0.04)' }}>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
       <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px', letterSpacing: '-0.01em' }}>{title}</div>
       {points.length > 0 ? (
         <>
@@ -322,11 +322,11 @@ function ScatterChart({ title, points }) {
   const maxY = Math.max(...points.map((point) => point.y), 0.01)
 
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 6px 16px rgba(24, 37, 52, 0.04)' }}>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
       <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px', letterSpacing: '-0.01em' }}>{title}</div>
       {points.length > 0 ? (
         <>
-          <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '150px', display: 'block', background: '#fbf8f2', borderRadius: '12px' }}>
+          <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '150px', display: 'block', background: '#fafcff', borderRadius: '12px' }}>
             {points.map((point) => {
               const cx = (point.x / maxX) * (width - 20) + 10
               const cy = height - (point.y / maxY) * (height - 20) - 10
@@ -481,12 +481,12 @@ export default function Admin() {
     borderRadius: '20px',
     background: palette.surface,
     overflow: 'hidden',
-    boxShadow: '0 10px 30px rgba(24, 37, 52, 0.05)',
+    boxShadow: '0 3px 12px rgba(16, 24, 40, 0.035)',
   }
 
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', padding: '44px 32px 56px', maxWidth: '1240px', margin: '0 auto', background: palette.page, color: palette.ink }}>
-      <div style={{ marginBottom: '28px', padding: '30px 32px', background: 'linear-gradient(135deg, #fcfaf6 0%, #f3ede2 100%)', border: `1px solid ${palette.border}`, borderRadius: '28px', boxShadow: palette.shadow }}>
+      <div style={{ marginBottom: '28px', padding: '30px 32px', background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: palette.shadow }}>
         <a href="/" style={{ color: palette.accent, fontSize: '13px', textDecoration: 'none', fontWeight: '700', letterSpacing: '.02em' }}><span aria-hidden="true">&larr;</span> Back to Tab Agent</a>
         <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.14em', fontWeight: '800', marginTop: '18px' }}>
           Research console
@@ -505,7 +505,7 @@ export default function Admin() {
             Live data from /api/collect
           </span>
           {lastUpdated && (
-            <span style={{ fontSize: '12px', padding: '7px 11px', borderRadius: '999px', background: '#f7f3ec', color: palette.subtle, fontWeight: '700', border: `1px solid ${palette.borderSoft}` }}>
+            <span style={{ fontSize: '12px', padding: '7px 11px', borderRadius: '999px', background: '#f8fafc', color: palette.subtle, fontWeight: '700', border: `1px solid ${palette.borderSoft}` }}>
               Last updated {lastUpdated.toLocaleTimeString()}
             </span>
           )}
@@ -517,7 +517,7 @@ export default function Admin() {
 
       {data && (
         <>
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: '0 8px 18px rgba(24, 37, 52, 0.03)' }}>
+          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
             <div style={sectionTitleStyle}>Top-level metrics</div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <StatCard label="Submissions" value={data.count} />
@@ -531,7 +531,7 @@ export default function Admin() {
           </div>
           </section>
 
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: '0 8px 18px rgba(24, 37, 52, 0.03)' }}>
+          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
             <div style={sectionTitleStyle}>Trend view</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
             <TrendChart title="Reward trend" points={dashboard.trend} valueKey="avgReward" color="#1F4E79" />
@@ -541,7 +541,7 @@ export default function Admin() {
           </div>
           </section>
 
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: '0 8px 18px rgba(24, 37, 52, 0.03)' }}>
+          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
             <div style={sectionTitleStyle}>Learning signals</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
             <MiniBarChart title="Outcome breakdown" items={outcomeItems} color={palette.accent} />
@@ -554,7 +554,7 @@ export default function Admin() {
               color={palette.warning}
               formatter={(value) => `${Math.round(value * 100)}% bad`}
             />
-            <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 6px 16px rgba(24, 37, 52, 0.04)' }}>
+            <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
               <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px' }}>
                 Offline training recommendation
               </div>
@@ -580,7 +580,7 @@ export default function Admin() {
           </section>
 
           {submissions.length > 0 ? (
-            <section style={{ padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: '0 8px 18px rgba(24, 37, 52, 0.03)' }}>
+            <section style={{ padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
               <div style={sectionTitleStyle}>Submitted sessions</div>
               <div style={{ fontSize: '13px', color: palette.muted, marginBottom: '16px', lineHeight: '1.7', maxWidth: '760px' }}>
                 Each submission includes the browser snapshot, autonomous outcomes, and learning signals. Expand a session only when you want the detailed trace.
@@ -607,7 +607,7 @@ export default function Admin() {
                     key={submission.id}
                     style={{
                       ...cardShellStyle,
-                      background: index % 2 === 0 ? palette.surface : '#fbf7f0',
+                      background: palette.surface,
                     }}
                   >
                     <summary
@@ -631,7 +631,7 @@ export default function Admin() {
                                 padding: '6px 10px',
                                 borderRadius: '999px',
                                 background: palette.accentSoft,
-                                border: '1px solid #d9e4ed',
+                                border: '1px solid #dde6ef',
                               }}
                             >
                               {sessionSubtitle}
@@ -659,7 +659,7 @@ export default function Admin() {
                                 fontSize: '12px',
                                 color: palette.accent,
                                 background: palette.accentSoft,
-                                border: '1px solid #d8e3ee',
+                                border: '1px solid #dde6ef',
                                 padding: '5px 9px',
                                 borderRadius: '999px',
                                 fontWeight: '700',
@@ -672,7 +672,7 @@ export default function Admin() {
                                 fontSize: '12px',
                                 color: palette.accent,
                                 background: palette.accentSoft,
-                                border: '1px solid #d8e3ee',
+                                border: '1px solid #dde6ef',
                                 padding: '5px 9px',
                                 borderRadius: '999px',
                                 fontWeight: '700',
@@ -721,7 +721,7 @@ export default function Admin() {
                       </div>
                     </summary>
 
-                    <div style={{ padding: '18px 22px 22px', display: 'grid', gap: '16px', background: '#fcfaf6' }}>
+                    <div style={{ padding: '18px 22px 22px', display: 'grid', gap: '16px', background: '#fbfdff' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
                         {[
                           { label: 'Useful', value: submission.groupingUseful || '-' },
@@ -739,19 +739,19 @@ export default function Admin() {
                               border: '1px solid #e6edf5',
                               borderRadius: '12px',
                               padding: '12px 13px',
-                              boxShadow: '0 2px 8px rgba(31,78,121,0.03)',
+                              boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)',
                             }}
                           >
-                            <div style={{ fontSize: '11px', color: '#7e8ea0', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px', fontWeight: '700' }}>
+                            <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px', fontWeight: '700' }}>
                               {item.label}
                             </div>
-                            <div style={{ fontSize: '18px', fontWeight: '800', color: '#274866' }}>{item.value}</div>
+                            <div style={{ fontSize: '18px', fontWeight: '800', color: palette.ink }}>{item.value}</div>
                           </div>
                         ))}
                       </div>
 
                       {payload.openAiPolicySummary?.summary && (
-                        <div style={{ padding: '14px 15px', background: palette.accentSoft, border: '1px solid #d9e4ed', borderRadius: '12px' }}>
+                        <div style={{ padding: '14px 15px', background: '#f9fbfd', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
                           <div style={{ fontSize: '12px', fontWeight: '700', color: palette.accent, marginBottom: '6px' }}>
                             OpenAI policy summary
                           </div>
@@ -762,15 +762,15 @@ export default function Admin() {
                       )}
 
                       {payload.adaptivePolicySummary?.effectivePolicy && (
-                        <div style={{ padding: '14px 15px', background: palette.warningSoft, border: '1px solid #ebd8b2', borderRadius: '12px' }}>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: palette.warning, marginBottom: '6px' }}>
+                        <div style={{ padding: '14px 15px', background: '#fcfcfd', border: '1px solid #eceff3', borderRadius: '12px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '6px' }}>
                             Adaptive policy summary
                           </div>
-                          <div style={{ fontSize: '13px', color: '#645a44', lineHeight: '1.7' }}>
+                          <div style={{ fontSize: '13px', color: palette.muted, lineHeight: '1.7' }}>
                             Sleep threshold: {payload.adaptivePolicySummary.effectivePolicy.sleepThreshold} | Min inactive: {payload.adaptivePolicySummary.effectivePolicy.minInactiveMinutes} min | Recent protect: {payload.adaptivePolicySummary.effectivePolicy.recentProtectMinutes} min
                           </div>
                           {Array.isArray(payload.adaptivePolicySummary.notes) && payload.adaptivePolicySummary.notes.length > 0 && (
-                            <div style={{ fontSize: '12px', color: '#73684b', marginTop: '6px', lineHeight: '1.6' }}>
+                            <div style={{ fontSize: '12px', color: palette.subtle, marginTop: '6px', lineHeight: '1.6' }}>
                               {payload.adaptivePolicySummary.notes.join(' ')}
                             </div>
                           )}
