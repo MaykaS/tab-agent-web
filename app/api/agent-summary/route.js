@@ -14,7 +14,7 @@ export async function POST(request) {
     }
 
     const prompt = `
-You are helping tune a conservative autonomous browser tab agent.
+You are helping tune a conservative, focus-first browser memory agent for knowledge workers.
 Return valid JSON only with this shape:
 {
   "summary": "short paragraph",
@@ -26,7 +26,13 @@ Return valid JSON only with this shape:
   "protectedContexts": ["group name"]
 }
 
+The product rule is: it is better to miss a sleep than to break focus.
 Use the structured context below to identify where the agent is too aggressive or too conservative.
+Pay special attention to:
+- autonomy mode (`observing` vs `trusted_autonomy`)
+- repeated regret, undo, and protect patterns
+- learned caution areas
+- whether safe-sleep confidence is justified or premature
 Do not suggest actions outside browser tab management.
 This context variant is: ${variant}.
 
