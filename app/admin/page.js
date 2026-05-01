@@ -244,19 +244,18 @@ function StatCard({ label, value }) {
   return (
     <div
       style={{
-        flex: 1,
-        minWidth: '180px',
+        minWidth: '0',
         background: palette.surface,
         border: `1px solid ${palette.borderSoft}`,
-        borderRadius: '18px',
-        padding: '18px 18px 16px',
-        boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)',
+        borderRadius: '16px',
+        padding: '14px 16px 13px',
+        boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)',
       }}
     >
-      <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px', fontWeight: '700' }}>
+      <div style={{ fontSize: '10px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.09em', marginBottom: '7px', fontWeight: '700' }}>
         {label}
       </div>
-      <div style={{ fontSize: '30px', fontWeight: '800', color: palette.ink, letterSpacing: '-0.03em' }}>{value}</div>
+      <div style={{ fontSize: '22px', fontWeight: '800', color: palette.ink, letterSpacing: '-0.03em', lineHeight: '1.15' }}>{value}</div>
     </div>
   )
 }
@@ -264,8 +263,8 @@ function StatCard({ label, value }) {
 function MiniBarChart({ title, items, color = '#1F4E79', formatter = (value) => value }) {
   const max = Math.max(...items.map((item) => item.value), 1)
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
-      <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '14px', letterSpacing: '-0.01em' }}>{title}</div>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '16px', padding: '14px 15px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)' }}>
+      <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '12px', letterSpacing: '-0.01em' }}>{title}</div>
       <div style={{ display: 'grid', gap: '10px' }}>
         {items.map((item) => (
           <div key={item.label}>
@@ -296,8 +295,8 @@ function TrendChart({ title, points, color, valueKey, yFormatter = (value) => va
   }).join(' ')
 
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
-      <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px', letterSpacing: '-0.01em' }}>{title}</div>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '16px', padding: '14px 15px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)' }}>
+      <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '10px', letterSpacing: '-0.01em' }}>{title}</div>
       {points.length > 0 ? (
         <>
           <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '120px', display: 'block' }}>
@@ -322,8 +321,8 @@ function ScatterChart({ title, points }) {
   const maxY = Math.max(...points.map((point) => point.y), 0.01)
 
   return (
-    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
-      <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px', letterSpacing: '-0.01em' }}>{title}</div>
+    <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '16px', padding: '14px 15px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)' }}>
+      <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '10px', letterSpacing: '-0.01em' }}>{title}</div>
       {points.length > 0 ? (
         <>
           <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '150px', display: 'block', background: '#fafcff', borderRadius: '12px' }}>
@@ -378,18 +377,18 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
   return (
     <div
       style={{
-        minWidth: priority ? '132px' : '104px',
-        padding: priority ? '12px 14px' : '10px 12px',
-        borderRadius: '14px',
+        minWidth: priority ? '104px' : '88px',
+        padding: priority ? '10px 12px' : '8px 10px',
+        borderRadius: '12px',
         background: tonePalette.background,
         border: `1px solid ${tonePalette.border}`,
         display: 'grid',
-        gap: '4px',
+        gap: '3px',
       }}
     >
       <div
         style={{
-          fontSize: '11px',
+          fontSize: '9px',
           color: tonePalette.label,
           textTransform: 'uppercase',
           letterSpacing: '.06em',
@@ -398,7 +397,7 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
       >
         {label}
       </div>
-      <div style={{ fontSize: priority ? '22px' : '18px', fontWeight: '800', color: tonePalette.value }}>
+      <div style={{ fontSize: priority ? '18px' : '15px', fontWeight: '800', color: tonePalette.value, lineHeight: '1.1' }}>
         {value}
       </div>
     </div>
@@ -468,44 +467,44 @@ export default function Admin() {
   ]
 
   const sectionTitleStyle = {
-    fontSize: '13px',
-    fontWeight: '800',
+    fontSize: '11px',
+    fontWeight: '700',
     color: palette.accent,
-    marginBottom: '14px',
-    letterSpacing: '.08em',
+    marginBottom: '12px',
+    letterSpacing: '.1em',
     textTransform: 'uppercase',
   }
 
   const cardShellStyle = {
     border: `1px solid ${palette.borderSoft}`,
-    borderRadius: '20px',
+    borderRadius: '18px',
     background: palette.surface,
     overflow: 'hidden',
-    boxShadow: '0 3px 12px rgba(16, 24, 40, 0.035)',
+    boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)',
   }
 
   return (
-    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '44px 32px 56px', maxWidth: '1240px', margin: '0 auto', background: palette.page, color: palette.ink }}>
-      <div style={{ marginBottom: '28px', padding: '30px 32px', background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: '24px', boxShadow: palette.shadow }}>
-        <a href="/" style={{ color: palette.accent, fontSize: '13px', textDecoration: 'none', fontWeight: '700', letterSpacing: '.02em' }}><span aria-hidden="true">&larr;</span> Back to Tab Agent</a>
-        <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.14em', fontWeight: '800', marginTop: '18px' }}>
+    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '32px 24px 44px', maxWidth: '1180px', margin: '0 auto', background: palette.page, color: palette.ink }}>
+      <div style={{ marginBottom: '20px', padding: '22px 24px', background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: palette.shadow }}>
+        <a href="/" style={{ color: palette.accent, fontSize: '12px', textDecoration: 'none', fontWeight: '600', letterSpacing: '.02em' }}><span aria-hidden="true">&larr;</span> Back to Tab Agent</a>
+        <div style={{ fontSize: '10px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.14em', fontWeight: '700', marginTop: '14px' }}>
           Research console
         </div>
-        <h1 style={{ fontSize: '38px', fontWeight: '800', color: palette.ink, marginTop: '10px', letterSpacing: '-0.04em', lineHeight: '1.05' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: '800', color: palette.ink, marginTop: '8px', letterSpacing: '-0.03em', lineHeight: '1.05' }}>
           Study Admin
         </h1>
-        <p style={{ color: palette.muted, fontSize: '15px', marginTop: '10px', maxWidth: '780px', lineHeight: '1.75' }}>
+        <p style={{ color: palette.muted, fontSize: '13px', marginTop: '8px', maxWidth: '760px', lineHeight: '1.7' }}>
           Review submitted sessions, track trust and regret trends, and inspect how the tab agent is learning over time. This page is designed for operator review, benchmark storytelling, and publishable study snapshots.
         </p>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '18px' }}>
-          <span style={{ fontSize: '12px', padding: '7px 11px', borderRadius: '999px', background: palette.accentSoft, color: palette.accent, fontWeight: '700', border: '1px solid #d8e3ee' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '14px' }}>
+          <span style={{ fontSize: '11px', padding: '6px 10px', borderRadius: '999px', background: palette.accentSoft, color: palette.accent, fontWeight: '600', border: '1px solid #d8e3ee' }}>
             Polling every 30s
           </span>
-          <span style={{ fontSize: '12px', padding: '7px 11px', borderRadius: '999px', background: palette.surface, color: palette.muted, fontWeight: '700', border: `1px solid ${palette.borderSoft}` }}>
+          <span style={{ fontSize: '11px', padding: '6px 10px', borderRadius: '999px', background: palette.surface, color: palette.muted, fontWeight: '600', border: `1px solid ${palette.borderSoft}` }}>
             Live data from /api/collect
           </span>
           {lastUpdated && (
-            <span style={{ fontSize: '12px', padding: '7px 11px', borderRadius: '999px', background: '#f8fafc', color: palette.subtle, fontWeight: '700', border: `1px solid ${palette.borderSoft}` }}>
+            <span style={{ fontSize: '11px', padding: '6px 10px', borderRadius: '999px', background: '#f8fafc', color: palette.subtle, fontWeight: '600', border: `1px solid ${palette.borderSoft}` }}>
               Last updated {lastUpdated.toLocaleTimeString()}
             </span>
           )}
@@ -517,9 +516,9 @@ export default function Admin() {
 
       {data && (
         <>
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
+          <section style={{ marginBottom: '18px', padding: '16px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '18px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)' }}>
             <div style={sectionTitleStyle}>Top-level metrics</div>
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'grid', gap: '12px', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
             <StatCard label="Submissions" value={data.count} />
             <StatCard label="Total sessions logged" value={totalSessions} />
             <StatCard label="Training examples" value={dashboard.trainingExampleCount} />
@@ -531,9 +530,9 @@ export default function Admin() {
           </div>
           </section>
 
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
+          <section style={{ marginBottom: '18px', padding: '16px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '18px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)' }}>
             <div style={sectionTitleStyle}>Trend view</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
             <TrendChart title="Reward trend" points={dashboard.trend} valueKey="avgReward" color="#1F4E79" />
             <TrendChart title="Regret-rate trend" points={dashboard.trend} valueKey="regretRate" color="#B26D00" yFormatter={(value) => `${Math.round(value * 100)}%`} />
             <TrendChart title="Memory-saved trend" points={dashboard.trend} valueKey="memorySaved" color="#2E7D32" yFormatter={(value) => `${Math.round(value)} MB`} />
@@ -541,9 +540,9 @@ export default function Admin() {
           </div>
           </section>
 
-          <section style={{ marginBottom: '26px', padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
+          <section style={{ marginBottom: '18px', padding: '16px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '18px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)' }}>
             <div style={sectionTitleStyle}>Learning signals</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
             <MiniBarChart title="Outcome breakdown" items={outcomeItems} color={palette.accent} />
             <MiniBarChart
               title="Top regret contexts"
@@ -554,8 +553,8 @@ export default function Admin() {
               color={palette.warning}
               formatter={(value) => `${Math.round(value * 100)}% bad`}
             />
-            <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '18px', padding: '18px', boxShadow: '0 2px 8px rgba(16, 24, 40, 0.03)' }}>
-              <div style={{ fontSize: '13px', fontWeight: '800', color: palette.ink, marginBottom: '12px' }}>
+            <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '16px', padding: '14px 15px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)' }}>
+              <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '10px' }}>
                 Offline training recommendation
               </div>
               <div style={{ fontSize: '12px', color: palette.muted, lineHeight: '1.7', marginBottom: '10px' }}>
@@ -580,12 +579,12 @@ export default function Admin() {
           </section>
 
           {submissions.length > 0 ? (
-            <section style={{ padding: '22px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '20px', boxShadow: '0 2px 10px rgba(16, 24, 40, 0.025)' }}>
+            <section style={{ padding: '16px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '18px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)' }}>
               <div style={sectionTitleStyle}>Submitted sessions</div>
-              <div style={{ fontSize: '13px', color: palette.muted, marginBottom: '16px', lineHeight: '1.7', maxWidth: '760px' }}>
+              <div style={{ fontSize: '12px', color: palette.muted, marginBottom: '12px', lineHeight: '1.6', maxWidth: '720px' }}>
                 Each submission includes the browser snapshot, autonomous outcomes, and learning signals. Expand a session only when you want the detailed trace.
               </div>
-            <div style={{ display: 'grid', gap: '16px' }}>
+            <div style={{ display: 'grid', gap: '12px' }}>
               {submissions.map((submission, index) => {
                 const payload = submission.payload || {}
                 const regretRate = submission.autoSleepCount
@@ -605,30 +604,27 @@ export default function Admin() {
                 return (
                   <details
                     key={submission.id}
-                    style={{
-                      ...cardShellStyle,
-                      background: palette.surface,
-                    }}
+                    style={cardShellStyle}
                   >
                     <summary
                       style={{
-                        padding: '20px 22px',
+                        padding: '14px 16px',
                         borderBottom: '1px solid #edf2f7',
                         cursor: 'pointer',
                         listStyle: 'none',
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                        <div style={{ display: 'grid', gap: '10px', minWidth: '250px', flex: '1 1 320px' }}>
-                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                        <div style={{ display: 'grid', gap: '8px', minWidth: '220px', flex: '1 1 300px' }}>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                             <span
                               style={{
-                                fontSize: '11px',
+                                fontSize: '9px',
                                 color: palette.muted,
                                 textTransform: 'uppercase',
-                                letterSpacing: '.06em',
+                                letterSpacing: '.08em',
                                 fontWeight: '700',
-                                padding: '6px 10px',
+                                padding: '5px 8px',
                                 borderRadius: '999px',
                                 background: palette.accentSoft,
                                 border: '1px solid #dde6ef',
@@ -636,46 +632,46 @@ export default function Admin() {
                             >
                               {sessionSubtitle}
                             </span>
-                            <span style={{ fontSize: '12px', color: palette.subtle }}>
+                            <span style={{ fontSize: '11px', color: palette.subtle }}>
                               {new Date(submission.receivedAt).toLocaleString()}
                             </span>
                           </div>
                           <div>
-                            <div style={{ fontSize: '24px', fontWeight: '800', color: palette.ink, lineHeight: '1.15', letterSpacing: '-0.03em' }}>
+                            <div style={{ fontSize: '18px', fontWeight: '800', color: palette.ink, lineHeight: '1.15', letterSpacing: '-0.02em' }}>
                               Participant {submission.participantId || 'anonymous'}
                             </div>
-                            <div style={{ fontSize: '13px', color: palette.muted, marginTop: '6px', lineHeight: '1.7', maxWidth: '620px' }}>
+                            <div style={{ fontSize: '12px', color: palette.muted, marginTop: '4px', lineHeight: '1.55', maxWidth: '560px' }}>
                               {submission.autoSleepCount || submission.autoWakeCount
                                 ? 'Snapshot includes autonomous outcomes, feedback signals, and memory estimates for this session.'
                                 : 'Snapshot captured grouping behavior and trust signals before autonomous actions started.'}
                             </div>
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-                            <span style={{ fontSize: '12px', color: palette.subtle, fontFamily: 'monospace' }}>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <span style={{ fontSize: '11px', color: palette.subtle, fontFamily: 'monospace' }}>
                               {submission.id}
                             </span>
                             <span
                               style={{
-                                fontSize: '12px',
+                                fontSize: '10px',
                                 color: palette.accent,
                                 background: palette.accentSoft,
                                 border: '1px solid #dde6ef',
-                                padding: '5px 9px',
+                                padding: '4px 8px',
                                 borderRadius: '999px',
-                                fontWeight: '700',
+                                fontWeight: '600',
                               }}
                             >
                               {submission.tabCount ?? 0} tabs
                             </span>
                             <span
                               style={{
-                                fontSize: '12px',
+                                fontSize: '10px',
                                 color: palette.accent,
                                 background: palette.accentSoft,
                                 border: '1px solid #dde6ef',
-                                padding: '5px 9px',
+                                padding: '4px 8px',
                                 borderRadius: '999px',
-                                fontWeight: '700',
+                                fontWeight: '600',
                               }}
                             >
                               {submission.groupCount ?? 0} groups
@@ -683,8 +679,8 @@ export default function Admin() {
                           </div>
                         </div>
 
-                        <div style={{ display: 'grid', gap: '12px', flex: '1 1 420px', minWidth: '280px' }}>
-                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'grid', gap: '8px', flex: '1 1 340px', minWidth: '240px' }}>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                             <SessionSummaryMetric
                               label="Auto-sleeps"
                               value={formatCompactNumber(submission.autoSleepCount ?? 0)}
@@ -704,7 +700,7 @@ export default function Admin() {
                               priority
                             />
                           </div>
-                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                             <SessionSummaryMetric label="Auto-wakes" value={formatCompactNumber(submission.autoWakeCount ?? 0)} tone="positive" />
                             <SessionSummaryMetric
                               label="Memory lift"
@@ -721,8 +717,8 @@ export default function Admin() {
                       </div>
                     </summary>
 
-                    <div style={{ padding: '18px 22px 22px', display: 'grid', gap: '16px', background: '#fbfdff' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+                    <div style={{ padding: '14px 16px 16px', display: 'grid', gap: '12px', background: '#fbfdff' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
                         {[
                           { label: 'Useful', value: submission.groupingUseful || '-' },
                           { label: 'Would use', value: submission.wouldUseInRealBrowsing || '-' },
@@ -737,40 +733,40 @@ export default function Admin() {
                             style={{
                               background: '#fff',
                               border: '1px solid #e6edf5',
-                              borderRadius: '12px',
-                              padding: '12px 13px',
+                              borderRadius: '10px',
+                              padding: '10px 11px',
                               boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)',
                             }}
                           >
-                            <div style={{ fontSize: '11px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px', fontWeight: '700' }}>
+                            <div style={{ fontSize: '9px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '5px', fontWeight: '700' }}>
                               {item.label}
                             </div>
-                            <div style={{ fontSize: '18px', fontWeight: '800', color: palette.ink }}>{item.value}</div>
+                            <div style={{ fontSize: '15px', fontWeight: '800', color: palette.ink, lineHeight: '1.2' }}>{item.value}</div>
                           </div>
                         ))}
                       </div>
 
                       {payload.openAiPolicySummary?.summary && (
-                        <div style={{ padding: '14px 15px', background: '#f9fbfd', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: palette.accent, marginBottom: '6px' }}>
+                        <div style={{ padding: '12px 13px', background: '#f9fbfd', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
+                          <div style={{ fontSize: '10px', fontWeight: '700', color: palette.accent, marginBottom: '5px', letterSpacing: '.06em', textTransform: 'uppercase' }}>
                             OpenAI policy summary
                           </div>
-                          <div style={{ fontSize: '13px', color: palette.muted, lineHeight: '1.7' }}>
+                          <div style={{ fontSize: '12px', color: palette.muted, lineHeight: '1.6' }}>
                             {payload.openAiPolicySummary.summary}
                           </div>
                         </div>
                       )}
 
                       {payload.adaptivePolicySummary?.effectivePolicy && (
-                        <div style={{ padding: '14px 15px', background: '#fcfcfd', border: '1px solid #eceff3', borderRadius: '12px' }}>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '6px' }}>
+                        <div style={{ padding: '12px 13px', background: '#fcfcfd', border: '1px solid #eceff3', borderRadius: '10px' }}>
+                          <div style={{ fontSize: '10px', fontWeight: '700', color: palette.ink, marginBottom: '5px', letterSpacing: '.06em', textTransform: 'uppercase' }}>
                             Adaptive policy summary
                           </div>
-                          <div style={{ fontSize: '13px', color: palette.muted, lineHeight: '1.7' }}>
+                          <div style={{ fontSize: '12px', color: palette.muted, lineHeight: '1.6' }}>
                             Sleep threshold: {payload.adaptivePolicySummary.effectivePolicy.sleepThreshold} | Min inactive: {payload.adaptivePolicySummary.effectivePolicy.minInactiveMinutes} min | Recent protect: {payload.adaptivePolicySummary.effectivePolicy.recentProtectMinutes} min
                           </div>
                           {Array.isArray(payload.adaptivePolicySummary.notes) && payload.adaptivePolicySummary.notes.length > 0 && (
-                            <div style={{ fontSize: '12px', color: palette.subtle, marginTop: '6px', lineHeight: '1.6' }}>
+                            <div style={{ fontSize: '11px', color: palette.subtle, marginTop: '5px', lineHeight: '1.5' }}>
                               {payload.adaptivePolicySummary.notes.join(' ')}
                             </div>
                           )}
@@ -779,19 +775,19 @@ export default function Admin() {
 
                       {payload.actionLog?.length > 0 && (
                         <div>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: palette.accent, marginBottom: '8px' }}>
+                          <div style={{ fontSize: '10px', fontWeight: '700', color: palette.accent, marginBottom: '6px', letterSpacing: '.06em', textTransform: 'uppercase' }}>
                             Recent autonomous actions
                           </div>
-                          <div style={{ display: 'grid', gap: '8px' }}>
+                          <div style={{ display: 'grid', gap: '6px' }}>
                             {payload.actionLog.slice(0, 5).map((action) => (
-                              <div key={action.id} style={{ padding: '11px 13px', border: `1px solid ${palette.borderSoft}`, borderRadius: '12px', background: palette.surface }}>
-                                <div style={{ fontSize: '12px', fontWeight: '700', color: action.type === 'auto_sleep' ? palette.warning : palette.accent }}>
+                              <div key={action.id} style={{ padding: '9px 11px', border: `1px solid ${palette.borderSoft}`, borderRadius: '10px', background: palette.surface }}>
+                                <div style={{ fontSize: '11px', fontWeight: '700', color: action.type === 'auto_sleep' ? palette.warning : palette.accent }}>
                                   {action.type.replace('_', ' ')} | confidence {(Number(action.confidence || 0) * 100).toFixed(0)}%
                                 </div>
-                                <div style={{ fontSize: '12px', color: palette.muted, marginTop: '4px', lineHeight: '1.6' }}>
+                                <div style={{ fontSize: '11px', color: palette.muted, marginTop: '3px', lineHeight: '1.5' }}>
                                   {action.reason}
                                 </div>
-                                <div style={{ fontSize: '12px', color: palette.subtle, marginTop: '4px' }}>
+                                <div style={{ fontSize: '10px', color: palette.subtle, marginTop: '3px' }}>
                                   Outcome: {action.outcome?.status || 'pending'}
                                 </div>
                               </div>
