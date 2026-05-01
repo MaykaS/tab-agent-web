@@ -29,7 +29,7 @@ Return valid JSON only with this shape:
 The product rule is: it is better to miss a sleep than to break focus.
 Use the structured context below to identify where the agent is too aggressive or too conservative.
 Pay special attention to:
-- autonomy mode (`observing` vs `trusted_autonomy`)
+- autonomy mode ("observing" vs "trusted_autonomy")
 - repeated regret, undo, and protect patterns
 - learned caution areas
 - whether safe-sleep confidence is justified or premature
