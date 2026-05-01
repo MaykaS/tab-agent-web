@@ -250,12 +250,16 @@ function StatCard({ label, value }) {
         borderRadius: '16px',
         padding: '14px 16px 13px',
         boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)',
+        minHeight: '96px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
       }}
     >
       <div style={{ fontSize: '10px', color: palette.subtle, textTransform: 'uppercase', letterSpacing: '.09em', marginBottom: '7px', fontWeight: '700' }}>
         {label}
       </div>
-      <div style={{ fontSize: '22px', fontWeight: '800', color: palette.ink, letterSpacing: '-0.03em', lineHeight: '1.15' }}>{value}</div>
+      <div style={{ fontSize: '20px', fontWeight: '600', color: palette.ink, letterSpacing: '-0.02em', lineHeight: '1.15' }}>{value}</div>
     </div>
   )
 }
@@ -314,29 +318,41 @@ function TrendChart({ title, points, color, valueKey, yFormatter = (value) => va
   )
 }
 
-function ScatterChart({ title, points }) {
-  const width = 320
-  const height = 150
-  const maxX = Math.max(...points.map((point) => point.x), 1)
-  const maxY = Math.max(...points.map((point) => point.y), 0.01)
-
+function SessionComparisonCard({ title, points }) {
   return (
     <div style={{ background: palette.surface, border: `1px solid ${palette.borderSoft}`, borderRadius: '16px', padding: '14px 15px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.025)' }}>
       <div style={{ fontSize: '12px', fontWeight: '700', color: palette.ink, marginBottom: '10px', letterSpacing: '-0.01em' }}>{title}</div>
       {points.length > 0 ? (
-        <>
-          <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '150px', display: 'block', background: '#fafcff', borderRadius: '12px' }}>
-            {points.map((point) => {
-              const cx = (point.x / maxX) * (width - 20) + 10
-              const cy = height - (point.y / maxY) * (height - 20) - 10
-              return <circle key={point.id} cx={cx} cy={cy} r="5" fill={palette.accent} opacity="0.88" />
-            })}
-          </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '11px', color: palette.subtle, marginTop: '8px' }}>
-            <span>Memory saved</span>
-            <span>Regret rate</span>
+        <div style={{ display: 'grid', gap: '8px' }}>
+          {points.slice(0, 5).map((point, index) => (
+            <div
+              key={point.id}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '28px minmax(0, 1fr) auto auto',
+                gap: '10px',
+                alignItems: 'center',
+                padding: '8px 10px',
+                border: `1px solid ${palette.borderSoft}`,
+                borderRadius: '12px',
+                background: '#fbfdff',
+              }}
+            >
+              <div style={{ fontSize: '10px', color: palette.subtle }}>{index + 1}</div>
+              <div style={{ fontSize: '11px', color: palette.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {point.label}
+              </div>
+              <div style={{ fontSize: '11px', color: palette.ink }}>{Math.round(point.x)} MB</div>
+              <div style={{ fontSize: '11px', color: palette.ink }}>{Math.round(point.y * 100)}%</div>
+            </div>
+          ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '28px minmax(0, 1fr) auto auto', gap: '10px', fontSize: '10px', color: palette.subtle, padding: '0 10px' }}>
+            <span />
+            <span>Session</span>
+            <span>Memory</span>
+            <span>Regret</span>
           </div>
-        </>
+        </div>
       ) : (
         <div style={{ fontSize: '12px', color: palette.subtle }}>No points yet.</div>
       )}
@@ -345,51 +361,24 @@ function ScatterChart({ title, points }) {
 }
 
 function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false }) {
-  const tones = {
-    neutral: {
-      background: palette.accentSoft,
-      border: '#d6e2ec',
-      label: '#5e7388',
-      value: palette.accent,
-    },
-    positive: {
-      background: palette.successSoft,
-      border: '#d7e8db',
-      label: '#5d7c67',
-      value: palette.success,
-    },
-    warning: {
-      background: palette.warningSoft,
-      border: '#ebd8b2',
-      label: '#8b6b35',
-      value: palette.warning,
-    },
-    danger: {
-      background: palette.dangerSoft,
-      border: '#efcfc9',
-      label: '#92524a',
-      value: palette.danger,
-    },
-  }
-
-  const tonePalette = tones[tone] || tones.neutral
-
   return (
     <div
       style={{
-        minWidth: priority ? '104px' : '88px',
-        padding: priority ? '10px 12px' : '8px 10px',
+        minWidth: '0',
+        padding: '10px 12px',
         borderRadius: '12px',
-        background: tonePalette.background,
-        border: `1px solid ${tonePalette.border}`,
+        background: palette.surface,
+        border: `1px solid ${palette.borderSoft}`,
         display: 'grid',
         gap: '3px',
+        minHeight: '62px',
+        alignContent: 'space-between',
       }}
     >
       <div
         style={{
           fontSize: '9px',
-          color: tonePalette.label,
+          color: palette.subtle,
           textTransform: 'uppercase',
           letterSpacing: '.06em',
           fontWeight: '700',
@@ -397,7 +386,7 @@ function SessionSummaryMetric({ label, value, tone = 'neutral', priority = false
       >
         {label}
       </div>
-      <div style={{ fontSize: priority ? '18px' : '15px', fontWeight: '800', color: tonePalette.value, lineHeight: '1.1' }}>
+      <div style={{ fontSize: '16px', fontWeight: '600', color: palette.ink, lineHeight: '1.1' }}>
         {value}
       </div>
     </div>
@@ -532,11 +521,11 @@ export default function Admin() {
 
           <section style={{ marginBottom: '18px', padding: '16px', background: palette.surfaceAlt, border: `1px solid ${palette.border}`, borderRadius: '18px', boxShadow: '0 1px 4px rgba(16, 24, 40, 0.02)' }}>
             <div style={sectionTitleStyle}>Trend view</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '12px' }}>
             <TrendChart title="Reward trend" points={dashboard.trend} valueKey="avgReward" color="#1F4E79" />
             <TrendChart title="Regret-rate trend" points={dashboard.trend} valueKey="regretRate" color="#B26D00" yFormatter={(value) => `${Math.round(value * 100)}%`} />
             <TrendChart title="Memory-saved trend" points={dashboard.trend} valueKey="memorySaved" color="#2E7D32" yFormatter={(value) => `${Math.round(value)} MB`} />
-            <ScatterChart title="Memory saved vs regret rate" points={dashboard.scatter} />
+            <SessionComparisonCard title="Session comparison" points={dashboard.scatter} />
           </div>
           </section>
 
@@ -593,10 +582,7 @@ export default function Admin() {
                 const undoRate = submission.autoSleepCount
                   ? Number(submission.undoCount || 0) / Number(submission.autoSleepCount || 1)
                   : 0
-                const regretTone = regretRate >= 0.35 ? 'danger' : regretRate >= 0.18 ? 'warning' : 'positive'
-                const undoTone = undoRate >= 0.18 ? 'warning' : undoRate > 0 ? 'neutral' : 'positive'
                 const memoryLift = Number(submission.memorySaved || 0) - Number(submission.fixedRuleMemorySavedMb || 0)
-                const memoryTone = memoryLift >= 0 ? 'positive' : 'warning'
                 const sessionSubtitle = payload.autonomyState?.mode === 'trusted_autonomy'
                   ? 'Trusted autonomy active'
                   : 'Observation-first session'
@@ -679,38 +665,28 @@ export default function Admin() {
                           </div>
                         </div>
 
-                        <div style={{ display: 'grid', gap: '8px', flex: '1 1 340px', minWidth: '240px' }}>
-                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        <div style={{ flex: '1 1 340px', minWidth: '240px' }}>
+                          <div style={{ display: 'grid', gap: '8px', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
                             <SessionSummaryMetric
                               label="Auto-sleeps"
                               value={formatCompactNumber(submission.autoSleepCount ?? 0)}
-                              tone="neutral"
-                              priority
                             />
                             <SessionSummaryMetric
                               label="Regrets"
                               value={formatCompactNumber(submission.regretCount ?? 0)}
-                              tone={regretTone}
-                              priority
                             />
                             <SessionSummaryMetric
                               label="Undos"
                               value={formatCompactNumber(submission.undoCount ?? 0)}
-                              tone={undoTone}
-                              priority
                             />
-                          </div>
-                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                             <SessionSummaryMetric label="Auto-wakes" value={formatCompactNumber(submission.autoWakeCount ?? 0)} tone="positive" />
                             <SessionSummaryMetric
                               label="Memory lift"
                               value={`${memoryLift >= 0 ? '+' : ''}${formatCompactNumber(memoryLift)} MB`}
-                              tone={memoryTone}
                             />
                             <SessionSummaryMetric
                               label="Trust"
                               value={submission.trustSleepClose ? `${submission.trustSleepClose}/5` : '-'}
-                              tone="neutral"
                             />
                           </div>
                         </div>
