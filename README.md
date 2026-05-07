@@ -1,6 +1,6 @@
 # tab-agent-web
 
-This repo is the **website and backend** for Tab Agent.
+This is the **website/backend/admin layer** for Tab Agent. The Chrome extension runtime lives in [MaykaS/tab_agent](https://github.com/MaykaS/tab_agent).
 
 It is **not** the Chrome extension itself.
 
@@ -9,12 +9,12 @@ It is **not** the Chrome extension itself.
 There are two repos:
 
 - **`tab_agent`** - Chrome extension runtime
-- **`tab_agent_web`** - website, API, storage, admin, and OpenAI summaries
+- **`tab-agent-web`** - website, API, storage, admin, and OpenAI summaries
 
 Rule of thumb:
 
 - if browser behavior should change -> edit `tab_agent`
-- if storage/admin/OpenAI summary should change -> edit `tab_agent_web`
+- if storage/admin/OpenAI summary should change -> edit `tab-agent-web`
 
 ## What this repo does
 
@@ -153,4 +153,4 @@ npm run train:policy -- path/to/export.json
 
 ## Deploy
 
-Connected to Vercel via GitHub. Push to `main` to deploy.
+Connected to Vercel via GitHub. Push to the connected deployment branch to deploy.
