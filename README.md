@@ -2,7 +2,7 @@
 
 This is the **website/backend/admin layer** for Tab Agent. The Chrome extension runtime lives in [MaykaS/tab_agent](https://github.com/MaykaS/tab_agent).
 
-It is **not** the Chrome extension itself.
+It is **not** the Chrome extension itself. For product framing and system architecture, see [`docs/PRODUCT.md`](https://github.com/MaykaS/tab_agent/blob/master/docs/PRODUCT.md) and [`docs/ARCHITECTURE.md`](https://github.com/MaykaS/tab_agent/blob/master/docs/ARCHITECTURE.md) in the extension repo.
 
 ## Repo split
 
