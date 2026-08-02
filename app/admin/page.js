@@ -53,11 +53,21 @@ function parsePayload(payload) {
   }
 }
 
+function daysActiveFromInstalledAt(installedAt) {
+  if (!installedAt) return null
+  const installedMs = Number(installedAt)
+  if (!Number.isFinite(installedMs)) return null
+  return Math.max(0, Math.floor((Date.now() - installedMs) / (24 * 60 * 60 * 1000)))
+}
+
 function normalizeSubmission(submission) {
   const payload = parsePayload(submission?.payload)
   return {
     ...submission,
     payload,
+    // installedAt only exists in exports from the Stats-page-redesign version onward -
+    // older submissions won't have it, so this stays null rather than guessing.
+    daysActive: daysActiveFromInstalledAt(payload.installedAt),
     tabCount: Number(submission?.tabCount || 0),
     groupCount: Number(submission?.groupCount || 0),
     autoSleepCount: Number(submission?.autoSleepCount || 0),
@@ -445,6 +455,10 @@ export default function Admin() {
   const avgUndoRate = submissions.length
     ? submissions.reduce((sum, submission) => sum + (submission.undoCount || 0), 0) / submissions.length
     : 0
+  const submissionsWithDaysActive = submissions.filter((submission) => submission.daysActive !== null)
+  const avgDaysActive = submissionsWithDaysActive.length
+    ? submissionsWithDaysActive.reduce((sum, submission) => sum + submission.daysActive, 0) / submissionsWithDaysActive.length
+    : null
 
   const outcomeItems = [
     { label: 'Safe', value: dashboard.outcomeCounts.safe },
@@ -516,6 +530,7 @@ export default function Admin() {
             <StatCard label="Rule baseline memory" value={`${totalRuleMemory.toFixed(0)} MB est.`} />
             <StatCard label="Avg undo rate" value={avgUndoRate.toFixed(1)} />
             <StatCard label="Average rating" value={`${avgRating.toFixed(1)}/5`} />
+            <StatCard label="Avg days active" value={avgDaysActive === null ? 'n/a' : avgDaysActive.toFixed(1)} />
           </div>
           </section>
 
@@ -687,6 +702,10 @@ export default function Admin() {
                             <SessionSummaryMetric
                               label="Trust"
                               value={submission.trustSleepClose ? `${submission.trustSleepClose}/5` : '-'}
+                            />
+                            <SessionSummaryMetric
+                              label="Days active"
+                              value={submission.daysActive === null ? 'n/a' : submission.daysActive}
                             />
                           </div>
                         </div>
